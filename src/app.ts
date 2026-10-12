@@ -1,0 +1,21 @@
+import express from 'express';
+import cors from 'cors';
+import { env } from './config/env.js';
+import { authRouter } from './routes/auth.routes.js';
+import { projectRouter } from './routes/project.routes.js';
+import { exportRouter } from './routes/export.routes.js';
+import { errorHandler } from './middlewares/errorHandler.js';
+import { aiRouter } from './routes/ai.routes.js';
+import { customComponentRouter } from './routes/custom-component.routes.js';
+
+export const app = express();
+app.disable('x-powered-by');
+app.use(cors({ origin: env.frontendUrl, credentials: true }));
+app.use(express.json({ limit: '2mb' }));
+app.get('/api/v1/health', (_req, res) => res.json({ status: 'ok', service: 'archbackend-api' }));
+app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/projects', projectRouter);
+app.use('/api/v1/export', exportRouter);
+app.use('/api/v1/ai', aiRouter);
+app.use('/api/v1/components/custom', customComponentRouter);
+app.use(errorHandler);
